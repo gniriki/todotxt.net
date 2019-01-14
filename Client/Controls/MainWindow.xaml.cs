@@ -228,6 +228,11 @@ namespace Client
             ViewModel.OpenFile();
         }
 
+        private void OpenDirExecuted(object sender, RoutedEventArgs e)
+        {
+            ViewModel.OpenDir();
+        }
+
         public void NewFileExecuted(object sender, RoutedEventArgs e)
         {
             ViewModel.NewFile();
@@ -662,6 +667,11 @@ namespace Client
         }
 
         #endregion
+
+        private void LbFiles_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.SelectedFileChanged();
+        }
     }
 }
 
