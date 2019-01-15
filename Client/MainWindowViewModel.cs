@@ -2013,20 +2013,17 @@ namespace Client
 
         private void LoadFiles(string dialogName)
         {
-            Files = Directory.GetFiles(dialogName,
-            "*.txt",
-            SearchOption.AllDirectories);
-
-            RaiseProperyChanged(nameof(Files));
+            FileList = new FileList(dialogName);
+            RaiseProperyChanged(nameof(FileList));
         }
 
-        public string[] Files { get; set; }
+        public FileList FileList { get; set; }
 
-        public string SelectedFile { get; set; }
+        public TodoFile SelectedFile { get; set; }
 
         public void SelectedFileChanged()
         {
-            LoadTasks(SelectedFile);
+            LoadTasks(SelectedFile.FilePath);
         }
     }
 }
