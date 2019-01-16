@@ -184,6 +184,16 @@ namespace Client
 
             ActiveFilterNumber=0;
 
+            if (!string.IsNullOrEmpty(User.Default.LastDirectory))
+            {
+                LoadDirectory(User.Default.LastDirectory);
+                if (!string.IsNullOrEmpty(User.Default.FilePath))
+                {
+                    SelectedFile = WorkingDirectory.Files.FirstOrDefault(x => x.FilePath == User.Default.FilePath);
+                    SelectedFileChanged();
+                }
+            }
+            else
             if (!string.IsNullOrEmpty(User.Default.FilePath))
             {
                 LoadTasks(User.Default.FilePath);
@@ -1510,6 +1520,19 @@ namespace Client
             if (res.Value)
             {
                 File.WriteAllText(dialog.FileName, "");
+                if (WorkingDirectory != null)
+                {
+                    if (WorkingDirectory.ContainsFile(dialog.FileName))
+                    {
+                        WorkingDirectory.LoadFiles();
+                        SelectedFile = WorkingDirectory.Files.FirstOrDefault(x => x.FilePath == dialog.FileName);
+                        SelectedFileChanged();
+                    }
+                    else
+                    {
+                        WorkingDirectory = null;
+                    }
+                }
                 LoadTasks(dialog.FileName);
             }
         }
@@ -2008,22 +2031,45 @@ namespace Client
             var res = dialog.ShowDialog();
 
             if (res.Value)
-                LoadFiles(dialog.SelectedPath);
+            {
+                var directoryName = dialog.SelectedPath;
+                LoadDirectory(directoryName);
+                User.Default.LastDirectory = directoryName;
+                User.Default.Save();
+            }
         }
 
-        private void LoadFiles(string dialogName)
+        private void LoadDirectory(string directoryName)
         {
-            FileList = new FileList(dialogName);
-            RaiseProperyChanged(nameof(FileList));
+            WorkingDirectory = new WorkingDirectory(directoryName);
+            RaiseProperyChanged(nameof(WorkingDirectory));
         }
 
-        public FileList FileList { get; set; }
+        public WorkingDirectory WorkingDirectory { get; set; }
 
-        public TodoFile SelectedFile { get; set; }
+        public TodoFile SelectedFile
+        {
+            get => _selectedFile;
+            set
+            {
+                _selectedFile = value;
+                OnPropertyChanged(nameof(SelectedFile));
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private TodoFile _selectedFile;
 
         public void SelectedFileChanged()
         {
-            LoadTasks(SelectedFile.FilePath);
+            if (SelectedFile != null)
+            {
+                LoadTasks(SelectedFile.FilePath);
+            }
         }
     }
 }

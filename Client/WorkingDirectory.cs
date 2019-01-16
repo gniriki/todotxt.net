@@ -1,24 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 namespace Client
 {
-    public class FileList
+    public class WorkingDirectory : INotifyPropertyChanged
     {
-        public FileList(string directoryPath)
+        private readonly string _workingDirectory;
+
+        public WorkingDirectory(string directoryPath)
         {
             if(!Directory.Exists(directoryPath))
                 return;
 
-            Files = Directory.GetFiles(directoryPath,
-                    "*.txt",
-                    SearchOption.AllDirectories).Select(x => new TodoFile(x, directoryPath))
-                .ToList();
+            _workingDirectory = directoryPath;
+
+            LoadFiles();
         }
 
-        public List<TodoFile> Files { get; set; } = new List<TodoFile>();
+        public void LoadFiles()
+        {
+            Files = Directory
+                .GetFiles(_workingDirectory, "*.txt", SearchOption.AllDirectories)
+                .Select(x => new TodoFile(x, _workingDirectory))
+                .ToList();
+            OnPropertyChanged(nameof(Files));
+        }
+
+        public List<TodoFile> Files { get; private set; } = new List<TodoFile>();
+
+        public bool ContainsFile(string fileName)
+        {
+            return Directory.GetFiles(_workingDirectory, "*.txt", SearchOption.AllDirectories)
+                .Contains(fileName);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class TodoFile

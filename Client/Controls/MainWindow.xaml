@@ -113,7 +113,7 @@
         </Style>
         <convertors:ActiveFilterToStatusConvertor x:Key="filterToStatusConv"></convertors:ActiveFilterToStatusConvertor>
         <convertors:SortTypeToDescriptionConvertor x:Key="sortTypeToDescConv"></convertors:SortTypeToDescriptionConvertor>
-        <CollectionViewSource x:Key="FileListItems" Source="{Binding Path=FileList.Files}">
+        <CollectionViewSource x:Key="WorkingDirectoryFiles" Source="{Binding Path=WorkingDirectory.Files}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="DirectoryGroup"/>
             </CollectionViewSource.GroupDescriptions>
@@ -317,8 +317,8 @@
                 <ColumnDefinition Width="150"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.RowSpan="2" ItemsSource="{Binding Source={StaticResource FileListItems}}"
-                     IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedFile}" Name="lbFiles"
+            <ListBox Grid.RowSpan="2" ItemsSource="{Binding Source={StaticResource WorkingDirectoryFiles}}"
+                     IsSynchronizedWithCurrentItem="True" SelectedValue="{Binding SelectedFile}" Name="lbFiles"
                      SelectionChanged="LbFiles_OnSelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -352,7 +352,7 @@
                                    KeyUp="taskText_PreviewKeyUp" 
                                    TaskList="{Binding TaskList}"
                                    CaseSensitive="{Binding Source={x:Static local:User.Default}, Path=IntellisenseCaseSensitive}" />
-            <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Tasks}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedItem}" Name="lbTasks" Margin="0,10,0,0" 
+            <ListBox Grid.Row="1" Grid.Column="1" IsSynchronizedWithCurrentItem="True" Name="lbTasks" Margin="0,10,0,0" 
                      SelectedIndex="0" IsTextSearchEnabled="False" AlternationCount="2" BorderBrush="{x:Null}" SelectionMode="Extended" Style="{StaticResource WordWrapEnabledListBox}">
                 <ListBox.CommandBindings>
                     <CommandBinding Command="ApplicationCommands.Copy" CanExecute="WhenTasksSelectedCanExecute" Executed="CopyTasksExecuted" />

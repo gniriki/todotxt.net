@@ -100,7 +100,7 @@
     <Compile Include="Converters\ActiveFilterToStatusConvertor.cs" />
     <Compile Include="Converters\SortTypeToDescriptionConvertor.cs" />
     <Compile Include="ExceptionExtensions.cs" />
-    <Compile Include="FileList.cs" />
+    <Compile Include="WorkingDirectory.cs" />
     <Compile Include="GroupConverter.cs" />
     <Compile Include="PortableSettingsProvider.cs" />
     <Compile Include="SortType.cs" />
